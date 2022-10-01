@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Surfingboy的博客
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
-language: en
+author: surfingboy
+language: zh-CN
 timezone: ''
 
 # URL
@@ -97,9 +97,26 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: icarus
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+comment:
+    type: gitalk
+    client_id: 4ab058a34cd7e4b67fe1
+    client_secret: 2c794996e41380e2333513537c8a51b52bf2c2d6
+    repo: blog
+    owner: yejialiango
+    admin:
+        - yejialiango
+    per_page: 20                    # 可选填
+    distraction_free_mode: false    # 可选填
+    pager_direction: last           # 可选填
+    create_issue_manually: false    # 可选填
+    proxy:                          # 可选填
+    flip_move_options:              # 可选填
+    enable_hotkey: true             # 可选填
+    language: zh-CN                 # 可选填
