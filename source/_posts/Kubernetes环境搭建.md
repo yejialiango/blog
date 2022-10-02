@@ -2,10 +2,14 @@
 title: Kubernetes环境搭建
 date: 2022-10-02 19:37:03
 type: tags
-tags: [Kubernetes, Containerd]
-categories: [DevOps, Kubernetes, 云原生]
+tags: [Kubernetes, DevOps]
+categories: [DevOps, Kubernetes]
+toc: true
 ---
 
+记录Kubernetes环境的搭建。
+
+<!--more-->
 
 ## 搭建环境 
 
