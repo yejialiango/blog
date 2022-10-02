@@ -102,4 +102,7 @@ theme: icarus
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repo: https://github.com/yejialiango/blog.git # https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
+  branch: main
+  token: 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
