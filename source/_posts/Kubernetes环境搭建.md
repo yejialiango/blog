@@ -295,8 +295,8 @@ vi /etc/v2ray/config.json
 systemctl show --property=FragmentPath containerd
 vim /usr/lib/systemd/system/containerd.service
 [Service]
-Environment="HTTP_PROXY=http://8.218.45.255:41997/"
-Environment="HTTPS_PROXY=http://8.218.45.255:41997/"
+Environment="HTTP_PROXY=http://${IP}:${PORT}/"
+Environment="HTTPS_PROXY=http://${IP}:${PORT}/"
 
 systemctl daemon-reaload
 systemctl restart containerd
@@ -344,10 +344,10 @@ sudo  yum install -y kubelet-1.24.0-0 kubeadm-1.24.0-0 kubectl-1.24.0-0
 >
 > 如果有socks5代理可以加上 --socks5 'user:pwd@host:port'如 :
 >
-> $  curl --socks5 'liang:liang1997!!@8.218.45.255:57231' -LO https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl
+> $  curl --socks5 '${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}' -LO https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl
 
 ```shell
-$ PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+$ PROXY='--socks5 ''${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'''
 $ curl $PROXY -LO https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl
 ```
 
@@ -375,7 +375,7 @@ $ kubectl version --client
 下载`kubelet`
 
 ```shell
-$ PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+$ PROXY='--socks5 ''${USER}:${PWD}@${IP}:${PORT}'''
 $ curl $PROXY -LO https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubelet
 ```
 
@@ -408,7 +408,7 @@ Kubernetes v1.24.0
 下载`kubelet`
 
 ```shell
-$ PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+$ PROXY='--socks5 ''${USER}:${PWD}@${IP}:${PORT}'''
 $ curl $PROXY -LO https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubeadm
 ```
 
@@ -438,7 +438,7 @@ $ kubeadm version
 **crictl**
 
 ```shell
-PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+PROXY='--socks5 ''${USER}:${PWD}@${IP}:${PORT}'''
 curl $PROXY -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz
 tar -zxvf crictl-v1.24.0-linux-amd64.tar.gz
 sudo cp ./crictl /usr/bin/
@@ -509,8 +509,8 @@ $ sudo yum -y install haproxy keepalived
 所有`master`节点修改`haproxy`配置文件：
 
 ```shell
-$ MASTER_IP_PORT1=159.75.25.84:6443
-$ MASTER_IP_PORT2=43.138.155.95:6443
+$ MASTER_IP_PORT1=${IP1}:6443
+$ MASTER_IP_PORT2=${IP2}:6443
 $ cat > /etc/haproxy/haproxy.cfg << EOF
 global
     log         127.0.0.1 local2
@@ -554,7 +554,7 @@ master1:
 
 ```shell
 $ mkdir /etc/keepalived
-$ MASTER_IP_PORT1=159.75.25.84
+$ MASTER_IP_PORT1=${IP1}
 $ EXPOSE_VIP= # 公网VIP
 $ cat > /etc/keepalived/keepalived.conf << EOF
 ! Configuration File for keepalived
@@ -595,7 +595,7 @@ master2:
 
 ```shell
 $ mkdir /etc/keepalived
-$ MASTER_IP_PORT2=43.138.155.95
+$ MASTER_IP_PORT2=${IP2}
 $ EXPOSE_VIP= # 公网VIP
 $ cat > /etc/keepalived/keepalived.conf << EOF
 ! Configuration File for keepalived
@@ -691,10 +691,9 @@ ping $EXPOSE_VIP
 
 ```shell
 # step0 ，公网IP变量
-#EXPOSE_IP=43.138.155.95
-#EXPOSE_IP=114.132.166.222
-EXPOSE_IP=159.75.25.84
-#EXPOSE_IP=119.91.157.11
+#EXPOSE_IP=${IP1}
+#EXPOSE_IP=${IP2}
+EXPOSE_IP=${IP1}
 # step1 ，注意替换你的公网IP进去
 cat > /etc/sysconfig/network-scripts/ifcfg-eth0:1 <<EOF
 BOOTPROTO=static
@@ -717,13 +716,13 @@ ip addr
 
 ```shell
 vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
-ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS --node-ip=43.138.155.95 # 加上-node-ip=43.138.155.95（公网IP）
+ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS --node-ip=${IP1} # 加上-node-ip=${IP1}（公网IP）
 ```
 
 ###### 修改`kubeadm`配置
 
 ```shell
-MASTER_EXPOSE_IP=43.138.155.95
+MASTER_EXPOSE_IP=${IP1}
 MASTER_INNER_IP=10.0.8.17
 cat >kubeadm-config.yaml <<EOF
 # kubeadm-config.yaml
@@ -784,7 +783,7 @@ EOF
 ```shell
 kubeadm init --config=kubeadm-config.yaml 
 
-kubeadm join 43.138.155.95:6443 --token rickye.yejialiangabcdef \
+kubeadm join ${IP1}:6443 --token rickye.yejialiangabcdef \
         --discovery-token-ca-cert-hash sha256:e89f72c62750d95dd726f2d1c3dbddc270df5776ac13bf484dace01c91c27cdb
 ```
 
@@ -799,7 +798,7 @@ spec:
   - command:
     - kube-apiserver
     - --bind-address=0.0.0.0 #添加此参数
-    - --advertise-address=43.138.155.95 
+    - --advertise-address=${IP1}
 
 ```
 
@@ -1012,7 +1011,7 @@ kubectl apply -f kube-flannel.yml
 > 3. cat /etc/hosts增加记录: 185.199.108.133 raw.githubusercontent.com
 
 ```shell
- PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+ PROXY='--socks5 ''${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'''
  curl $PROXY -LO  https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 ```
 
@@ -1122,7 +1121,7 @@ linux02   Ready    <none>          4m17s   v1.24.0
 ##### Dashboard插件
 
 ```shell
-PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+PROXY='--socks5 ''${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'''
 curl $PROXY -LO  https://raw.githubusercontent.com/kubernetes/dashboard/v2.6.0/aio/deploy/recommended.yaml
 kubectl apply -f recommended.yaml
 
@@ -1144,7 +1143,7 @@ kubernetes-dashboard-5676d8b865-crv57       1/1     Running   0          118s
 ###### 部署Rook Operator
 
 ```shell
-PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+PROXY='--socks5 ''${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'''
 curl $PROXY -LO https://raw.githubusercontent.com/rook/rook/master/deploy/examples/crds.yaml
 curl $PROXY -LO https://raw.githubusercontent.com/rook/rook/master/deploy/examples/common.yaml
 curl $PROXY -LO https://raw.githubusercontent.com/rook/rook/master/deploy/examples/operator.yaml
@@ -1185,8 +1184,8 @@ sh -x ceph_cluster_image.sh
 - **拉取镜像方法二：设置全局代理**
 
 ```shell
-export https_proxy='socks5://liang:liang1997!!@8.218.45.255:57231'
-export http_proxy='socks5://liang:liang1997!!@8.218.45.255:57231'
+export https_proxy='socks5://${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'
+export http_proxy='socks5://${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'
 # 拉取镜像即可
 ctr image pull k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0
 # 复原
@@ -1230,8 +1229,8 @@ vi /etc/v2ray/config.json
 systemctl show --property=FragmentPath containerd
 vim /usr/lib/systemd/system/containerd.service
 [Service]
-Environment="HTTP_PROXY=http://8.218.45.255:41997/"
-Environment="HTTPS_PROXY=http://8.218.45.255:41997/"
+Environment="HTTP_PROXY=http://${PROXY_IP}:${PROXY_PORT}/"
+Environment="HTTPS_PROXY=http://${PROXY_IP}:${PROXY_PORT}/"
 
 systemctl daemon-reaload
 systemctl restart containerd
@@ -1244,7 +1243,7 @@ systemctl restart containerd
 
 
 ```shell
-PROXY='--socks5 ''liang:liang1997!!@8.218.45.255:57231'''
+PROXY='--socks5 ''${USER}:${PWD}@${PROXY_IP}:${PROXY_PORT}'''
 curl $PROXY -LO https://raw.githubusercontent.com/rook/rook/master/deploy/examples/cluster.yaml
 kubectl create -f cluster.yaml
 
@@ -1257,7 +1256,6 @@ kubectl -n rook-ceph get pod
 
 
 ### 使用二进制方式准备环境
-
 
 
 
