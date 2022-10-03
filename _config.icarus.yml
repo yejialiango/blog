@@ -7,7 +7,8 @@ logo: /img/logo.png
 # Page metadata configurations
 head:
     # URL or path to the website's icon
-    favicon: /img/favicon.svg
+    # favicon: /img/favicon.svg
+    favicon: /img/logo.png
     # Web application manifests configuration
     # https://developer.mozilla.org/en-US/docs/Web/Manifest
     manifest:
@@ -203,7 +204,7 @@ widgets:
         type: profile
         position: left
         author: surfingboy
-        author_title: 3G网速实在是太快啦
+        author_title: Hi, 你好~
         location: 'Shenzhen, China'
         avatar: 'https://raw.githubusercontent.com/yejialiango/blog/main/logo.png'
         gravatar: 
