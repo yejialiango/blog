@@ -206,7 +206,7 @@ widgets:
         author: surfingboy
         author_title: Hi, 你好~
         location: 'Shenzhen, China'
-        avatar: 'https://raw.githubusercontent.com/yejialiango/blog/main/logo.png'
+        avatar: 'https://blog-1252122769.cos.ap-guangzhou.myqcloud.com/logo.png'
         gravatar: 
         avatar_rounded: false
         social_links:
